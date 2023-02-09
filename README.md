@@ -33,14 +33,22 @@ sudo service docker start # start service
 ## Automatic start docker service after reboot
 Since wsl is not boot system, we can not use systemctl for automatic service start after "reboot" (wsl as a sub system never got rebooted anyway). 
 
-Use Windows Task Scheduler to run wsl command after Windows reboot:
-* run "sudo visudo" in wsl, try to turn off the requirement for a password for our command.
+For automatic start, we need to turn off the requirement for a password for our command.
+* run "sudo visudo" in wsl
 * add the following command to the bottom of the sudoers file, and then press Ctrl+o to save and Ctrl+x to exit the file.
-
 ```
 %sudo ALL=NOPASSWD:/usr/sbin/service docker start
 ```
 
+Then put the .bat file that contains command 
+```
+@echo off
+wsl sudo service docker start
+```
+to folder "C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup" and/or "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp".
+
+
+Alternatively, we can use Windows Task Scheduler
 * open Windows Task Scheduler, create a new basic task.
 * setup Triggers "At startup"
 * setup Actions: In "Program/Scirpts" input "C:\Windows\System32\wsl.exe", in "arguments" input "sudo service docker start"
